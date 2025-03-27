@@ -1,4 +1,4 @@
-# -*- coding: gbk -*-
+# -*- coding: utf-8 -*-
 
 import base64
 import hashlib
@@ -43,8 +43,8 @@ class MVC:
             text_data = {
                 "msgtype": "text",
                 "text": {
-                    "content": str(
-                        datetime.now()) + '--->>>ÎÒÃÇÊÇÊØ»¤Õß£¬Ò²ÊÇÒ»ÈºÊ±¿Ì¶Ô¿¹Î£ÏÕºÍ·è¿ñµÄ¿ÉÁ¯³æ £¡^_^     -->> ' + sendtexts
+       
+                    "content": str(datetime.now()) + "--->>>æˆ‘ä»¬æ˜¯å®ˆæŠ¤è€…ï¼Œä¹Ÿæ˜¯ä¸€ç¾¤æ—¶åˆ»å¯¹æŠ—å±é™©å’Œç–¯ç‹‚çš„å¯æ€œè™« ï¼^_^     -->> " + str(sendtexts)
                 }
             }
             roboturl = 'https://oapi.dingtalk.com/robot/send?access_token=f8195c9e4ad6da4427d67e80dffed5d07ecaca1d1e79462fb5c0a9c6b12e90f2'
@@ -54,10 +54,10 @@ class MVC:
 
     def getsymbollist():
         t = time.time()
-        # Ô­Ê¼Ê±¼äÊı¾İ
-        # print (int(t))                  #Ãë¼¶Ê±¼ä´Á
-        # print (int(round(t * 1000)))    #ºÁÃë¼¶Ê±¼ä´Á
-        # print (int(round(t * 1000000))) #Î¢Ãë¼¶Ê±¼ä´Á
+        # åŸå§‹æ—¶é—´æ•°æ®
+        # print (int(t))                  #ç§’çº§æ—¶é—´æˆ³
+        # print (int(round(t * 1000)))    #æ¯«ç§’çº§æ—¶é—´æˆ³
+        # print (int(round(t * 1000000))) #å¾®ç§’çº§æ—¶é—´æˆ³
         tt = str((int(t * 1000)))
         ttt = str((int(round(t * 1000000))))
         headers = {
@@ -97,13 +97,13 @@ class MVC:
             symbollist.append(symbol)
         return list(set(symbollist))
 
-    # ²éÑ¯×îĞÂ¼Û¸ñ
+    # æŸ¥è¯¢æœ€æ–°ä»·æ ¼
     def getlastprice(api_key, secret_key, passphrase, flag, symbol):
 
         # market api
         marketAPI = Market.MarketAPI(api_key, secret_key, passphrase, False, flag)
 
-        # »ñÈ¡µ¥¸ö²úÆ·ĞĞÇéĞÅÏ¢  Get Ticker
+        # è·å–å•ä¸ªäº§å“è¡Œæƒ…ä¿¡æ¯  Get Ticker
         result = marketAPI.get_ticker(symbol)
         print(eval(json.dumps(result['data'][0])))
 
@@ -114,43 +114,43 @@ class MVC:
         accountAPI = Account.AccountAPI(api_key, secret_key, passphrase, False, flag)
         result = accountAPI.get_position_risk('SWAP')
         datas = result['data'][0]['posData']
-        # »ñÈ¡³Ö²ÖµÄ½»Ò×Æ·ÖÖ['instId']
+        # è·å–æŒä»“çš„äº¤æ˜“å“ç§['instId']
 
         if len(datas) > 0:
             # print(datas)
-            # Ê¹ÓÃÑ­»·±éÀú posData ÁĞ±íÖĞµÄÃ¿¸öÔªËØ
+            # ä½¿ç”¨å¾ªç¯éå† posData åˆ—è¡¨ä¸­çš„æ¯ä¸ªå…ƒç´ 
             for item in datas:
                 try:
                     time.sleep(1)
-                    # ´òÓ¡Ã¿¸ö instId
+                    # æ‰“å°æ¯ä¸ª instId
                     symbol = item['instId']
-                    # ½« instId Ìí¼Óµ½ symbollist ÁĞ±íÖĞ
+                    # å°† instId æ·»åŠ åˆ° symbollist åˆ—è¡¨ä¸­
 
-                    # ²é¿´³Ö²ÖĞÅÏ¢  Get Positions
+                    # æŸ¥çœ‹æŒä»“ä¿¡æ¯  Get Positions
                     result = accountAPI.get_positions('SWAP', symbol)
 
-                    # Î´ÊµÏÖÊÕÒæÂÊ
+                    # æœªå®ç°æ”¶ç›Šç‡
                     uplRatio = float(result['data'][0]['uplRatio'])
 
                     if uplRatio > 0.35 or uplRatio < -30:
-                        print("symbol--->>>", symbol, "Î´ÊµÏÖÊÕÒæÂÊ--->>>", uplRatio)
+                        print("symbol--->>>", symbol, "æœªå®ç°æ”¶ç›Šç‡--->>>", uplRatio)
                         tradeAPI = Trade.TradeAPI(api_key, secret_key, passphrase, False, flag)
 
-                        # ÊĞ¼Û²ÖÎ»È«Æ½  Close Positions
+                        # å¸‚ä»·ä»“ä½å…¨å¹³  Close Positions
                         result = tradeAPI.close_positions(symbol, 'cross', 'long', '')
                 except:
                     pass
 
-    # ²éÑ¯ÊÇ·ñ³­µ× È»ºó ¶ÁÈ¡ÂòÈëÈÕÖ¾¸üĞÂ×îĞÂ10ĞĞÊı¾İ±£´æ
+    # æŸ¥è¯¢æ˜¯å¦æŠ„åº• ç„¶å è¯»å–ä¹°å…¥æ—¥å¿—æ›´æ–°æœ€æ–°10è¡Œæ•°æ®ä¿å­˜
     def getuplRatio_instId(api_key, secret_key, passphrase, flag):
 
-        # ¶ÁÈ¡ÎÄ¼ş
+        # è¯»å–æ–‡ä»¶
         # df = pd.read_csv("..\\datas\\log\\buylog.txt", header=None)
 
-        # »ñÈ¡×îºó10ĞĞ
+        # è·å–æœ€å10è¡Œ
         # last_10_lines = df.tail(10)
 
-        # ±£´æµ½Ô­ÎÄ¼ş£¬Ìæ»»Ô´ÎÄ¼ş
+        # ä¿å­˜åˆ°åŸæ–‡ä»¶ï¼Œæ›¿æ¢æºæ–‡ä»¶
         # last_10_lines.to_csv("..\\datas\\log\\buylog.txt", header=False, index=False)
 
         # account api
@@ -158,39 +158,39 @@ class MVC:
         result = accountAPI.get_position_risk('SWAP')
         datas = result['data'][0]['posData']
 
-        # »ñÈ¡³Ö²ÖµÄ½»Ò×Æ·ÖÖ['instId']
+        # è·å–æŒä»“çš„äº¤æ˜“å“ç§['instId']
 
-        # ¶¨ÒåÒª´æ·ÅÎÄ¼şµÄÂ·¾¶
+        # å®šä¹‰è¦å­˜æ”¾æ–‡ä»¶çš„è·¯å¾„
         folder_path = '../datas/uplRatio/log'
         file_path = os.path.join(folder_path, 'uplRatio.txt')
 
-        # ¼ì²éÂ·¾¶ÊÇ·ñ´æÔÚ£¬²»´æÔÚÔò´´½¨
+        # æ£€æŸ¥è·¯å¾„æ˜¯å¦å­˜åœ¨ï¼Œä¸å­˜åœ¨åˆ™åˆ›å»º
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
-        # ÏÖÔÚÂ·¾¶´æÔÚ£¬´ò¿ªÎÄ¼ş²¢Çå¿ÕÖ®Ç°ÄÚÈİ
+        # ç°åœ¨è·¯å¾„å­˜åœ¨ï¼Œæ‰“å¼€æ–‡ä»¶å¹¶æ¸…ç©ºä¹‹å‰å†…å®¹
         with open(file_path, 'w', encoding='utf-8') as file:
-            # ½«ÈÕÖ¾ĞÅÏ¢Ğ´ÈëÎÄ¼ş
+            # å°†æ—¥å¿—ä¿¡æ¯å†™å…¥æ–‡ä»¶
             file.write("")
 
         if len(datas) > 0:
             # print(datas)
-            # Ê¹ÓÃÑ­»·±éÀú posData ÁĞ±íÖĞµÄÃ¿¸öÔªËØ
+            # ä½¿ç”¨å¾ªç¯éå† posData åˆ—è¡¨ä¸­çš„æ¯ä¸ªå…ƒç´ 
             for item in datas:
                 try:
                     time.sleep(1)
-                    # ´òÓ¡Ã¿¸ö instId
+                    # æ‰“å°æ¯ä¸ª instId
                     symbol = item['instId']
-                    # ½« instId Ìí¼Óµ½ symbollist ÁĞ±íÖĞ
+                    # å°† instId æ·»åŠ åˆ° symbollist åˆ—è¡¨ä¸­
 
-                    # ²é¿´³Ö²ÖĞÅÏ¢  Get Positions
+                    # æŸ¥çœ‹æŒä»“ä¿¡æ¯  Get Positions
                     result = accountAPI.get_positions('SWAP', symbol)
                     posSide = result['data'][0]['posSide']
-                    # Î´ÊµÏÖÊÕÒæÂÊ
+                    # æœªå®ç°æ”¶ç›Šç‡
                     uplRatio = float(result['data'][0]['uplRatio'])
 
                     print(uplRatio)
-                    if uplRatio < -0.5:
+                    if uplRatio < -0.25:
 
                         if -5 < uplRatio < -3:
 
@@ -201,60 +201,60 @@ class MVC:
                             MVC.buyorders(api_key, secret_key, passphrase, flag, symbol, "low")
 
                     notionalUsd = float(result['data'][0]['notionalUsd'])
-                    # ±£Ö¤½ğ
+                    # ä¿è¯é‡‘
                     imr = float(result['data'][0]['imr'])
-                    # Á¿
+                    # é‡
                     pos = float(result['data'][0]['pos'])
-                    # µ¥¸öÁ¿ ±£Ö¤½ğÖµ
+                    # å•ä¸ªé‡ ä¿è¯é‡‘å€¼
                     onlyimr = imr / pos
-                    # ²é¿´³Ö²ÖĞÅÏ¢  Get Positions
+                    # æŸ¥çœ‹æŒä»“ä¿¡æ¯  Get Positions
                     result = accountAPI.get_positions('SWAP', symbol)
-                    # ¿ª²Ö¾ù¼Û
+                    # å¼€ä»“å‡ä»·
                     avgPx = float(result['data'][0]['avgPx'])
-                    # ÏÖ¼Û
+                    # ç°ä»·
                     last = float(result['data'][0]['last'])
-                    # ¸Ü¸Ë±¶Êı
+                    # æ æ†å€æ•°
                     lever = float(result['data'][0]['lever'])
 
-                    log = ("\nsymbol--->>>" + symbol + ",Î´ÊµÏÖÊÕÒæÂÊ--->>>" + "{:.5f}".format(uplRatio * 100) + "%" +
-                           ",ÏÖ¼Û--->>>" + "{:.5f}".format(last) + ",¿ª²Ö¾ù¼Û--->>>" + "{:.5f}".format(
-                                avgPx) + ",±£Ö¤½ğ--->>>" + "{:.5f}".format(imr) + ",¸Ü¸Ë±¶Êı--->>>" + str(
-                                lever) + ",×Ü¼Æ¿÷Ëğ½ğ¶î--->>>" + "{:.5f}".format(
+                    log = ("\nsymbol--->>>" + symbol + ",æœªå®ç°æ”¶ç›Šç‡--->>>" + "{:.5f}".format(uplRatio * 100) + "%" +
+                           ",ç°ä»·--->>>" + "{:.5f}".format(last) + ",å¼€ä»“å‡ä»·--->>>" + "{:.5f}".format(
+                                avgPx) + ",ä¿è¯é‡‘--->>>" + "{:.5f}".format(imr) + ",æ æ†å€æ•°--->>>" + str(
+                                lever) + ",æ€»è®¡äºæŸé‡‘é¢--->>>" + "{:.5f}".format(
                                 imr * uplRatio))
 
-                    # ÏÖÔÚÂ·¾¶´æÔÚ£¬´ò¿ªÎÄ¼ş²¢ÔÚÎ²²¿×·¼ÓÄÚÈİ£¬Ö¸¶¨±àÂëÎªUTF-8
+                    # ç°åœ¨è·¯å¾„å­˜åœ¨ï¼Œæ‰“å¼€æ–‡ä»¶å¹¶åœ¨å°¾éƒ¨è¿½åŠ å†…å®¹ï¼ŒæŒ‡å®šç¼–ç ä¸ºUTF-8
                     with open(file_path, 'a', encoding='utf-8') as file:
-                        # ½«ÈÕÖ¾ĞÅÏ¢Ğ´ÈëÎÄ¼ş
+                        # å°†æ—¥å¿—ä¿¡æ¯å†™å…¥æ–‡ä»¶
                         file.write(log)
 
 
                 except:
                     pass
 
-    # »ñÈ¡ÊµÊ±ÕË»§×Ê½ğĞÅÏ¢ Ã¿·ÖÖÓ²éÑ¯Ò»´Î
+    # è·å–å®æ—¶è´¦æˆ·èµ„é‡‘ä¿¡æ¯ æ¯åˆ†é’ŸæŸ¥è¯¢ä¸€æ¬¡
     def getcashbal(api_key, secret_key, passphrase, flag):
-        # ¶¨ÒåÒª´æ·ÅÎÄ¼şµÄÂ·¾¶
+        # å®šä¹‰è¦å­˜æ”¾æ–‡ä»¶çš„è·¯å¾„
         folder_path = '../datas/uplRatio/log'
         file_path = os.path.join(folder_path, 'cashbal.txt')
 
-        # ¼ì²éÂ·¾¶ÊÇ·ñ´æÔÚ£¬²»´æÔÚÔò´´½¨
+        # æ£€æŸ¥è·¯å¾„æ˜¯å¦å­˜åœ¨ï¼Œä¸å­˜åœ¨åˆ™åˆ›å»º
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
-        # ÏÖÔÚÂ·¾¶´æÔÚ£¬´ò¿ªÎÄ¼ş²¢Çå¿ÕÖ®Ç°ÄÚÈİ
+        # ç°åœ¨è·¯å¾„å­˜åœ¨ï¼Œæ‰“å¼€æ–‡ä»¶å¹¶æ¸…ç©ºä¹‹å‰å†…å®¹
         with open(file_path, 'w', encoding='utf-8') as file:
-            # ½«ÈÕÖ¾ĞÅÏ¢Ğ´ÈëÎÄ¼ş
+            # å°†æ—¥å¿—ä¿¡æ¯å†™å…¥æ–‡ä»¶
             file.write("")
 
         # account api
         accountAPI = Account.AccountAPI(api_key, secret_key, passphrase, False, flag)
 
-        # ²é¿´ÕË»§Óà¶î  Get Balance
+        # æŸ¥çœ‹è´¦æˆ·ä½™é¢  Get Balance
         result = accountAPI.get_account('USDT')['data'][0]["details"][0]
         swap = accountAPI.get_position_risk('SWAP')
         posData = 0 if not swap['data'][0]['posData'] else swap['data'][0]['posData']
         posData_length = str(len(posData)) if isinstance(posData, list) else str(posData)
-        # ¼ì²éÃ¿¸öÖµ£¬Èç¹ûÎª¿Õ»òÕßÎª0£¬¾Í´òÓ¡0£¬·ñÔò´òÓ¡Êµ¼ÊµÄÖµ
+        # æ£€æŸ¥æ¯ä¸ªå€¼ï¼Œå¦‚æœä¸ºç©ºæˆ–è€…ä¸º0ï¼Œå°±æ‰“å°0ï¼Œå¦åˆ™æ‰“å°å®é™…çš„å€¼
         disEq = 0 if not result["disEq"] else float(result["disEq"])
         upl = 0 if not result["upl"] else float(result["upl"])
         cashBal = 0 if not result["cashBal"] else float(result["cashBal"])
@@ -262,29 +262,29 @@ class MVC:
         availBal = 0 if not result["availBal"] else float(result["availBal"])
         frozenBal = 0 if not result["frozenBal"] else float(result["frozenBal"])
 
-        log = ("\nºÏÔ¼¶©µ¥ÊıÁ¿----->>>" + str(posData_length) + "¸ö,  " +
-               "±ÒÖÖÕÛËãÈ¨Òæ----->>>" + "{:.2f}".format(disEq) + "¡ç,  " +
-               "\nÊµ¼ÊÎ´½áËãÓ¯¿÷×Ü¶î£º--->>>" + "{:.2f}".format(upl) + "¡ç,  " +
-               "USDT±ÒÖÖÓà¶î----->>>" + "{:.2f}".format(cashBal) + "¡ç," +
-               "\n±£Ö¤½ğÂÊ----->>>" + "{:.2f}".format(mgnRatio * 100) + "%,  " +
-               "¿ÉÓÃÓà¶î----->>>" + "{:.2f}".format(availBal) + "¡ç,  " +
-               "\n,±ÒÖÖÕ¼ÓÃ½ğ¶î--->>>" + "{:.2f}".format(frozenBal) + "¡ç" + "\n\n")
+        log = ("\nåˆçº¦è®¢å•æ•°é‡----->>>" + str(posData_length) + "ä¸ª,  " +
+               "å¸ç§æŠ˜ç®—æƒç›Š----->>>" + "{:.2f}".format(disEq) + "ï¼„,  " +
+               "\nå®é™…æœªç»“ç®—ç›ˆäºæ€»é¢ï¼š--->>>" + "{:.2f}".format(upl) + "ï¼„,  " +
+               "USDTå¸ç§ä½™é¢----->>>" + "{:.2f}".format(cashBal) + "ï¼„," +
+               "\nä¿è¯é‡‘ç‡----->>>" + "{:.2f}".format(mgnRatio * 100) + "%,  " +
+               "å¯ç”¨ä½™é¢----->>>" + "{:.2f}".format(availBal) + "ï¼„,  " +
+               "\n,å¸ç§å ç”¨é‡‘é¢--->>>" + "{:.2f}".format(frozenBal) + "ï¼„" + "\n\n")
 
-        # ÏÖÔÚÂ·¾¶´æÔÚ£¬´ò¿ªÎÄ¼ş²¢ÔÚÎ²²¿×·¼ÓÄÚÈİ£¬Ö¸¶¨±àÂëÎªUTF-8
+        # ç°åœ¨è·¯å¾„å­˜åœ¨ï¼Œæ‰“å¼€æ–‡ä»¶å¹¶åœ¨å°¾éƒ¨è¿½åŠ å†…å®¹ï¼ŒæŒ‡å®šç¼–ç ä¸ºUTF-8
         with open(file_path, 'a', encoding='utf-8') as file:
-            # ½«ÈÕÖ¾ĞÅÏ¢Ğ´ÈëÎÄ¼ş
+            # å°†æ—¥å¿—ä¿¡æ¯å†™å…¥æ–‡ä»¶
             file.write(log)
 
         SendDingding.sender(log)
 
-    # ×Ê½ğÀúÊ·¼ÇÂ¼ Ã¿·ÖÖÓ¼ÇÂ¼Ò»´Î
+    # èµ„é‡‘å†å²è®°å½• æ¯åˆ†é’Ÿè®°å½•ä¸€æ¬¡
     def getcashhistory(api_key, secret_key, passphrase, flag):
 
         # account api
         accountAPI = Account.AccountAPI(api_key, secret_key, passphrase, False, flag)
-        # ²é¿´ÕË»§³Ö²Ö·çÏÕ GET Position_risk
+        # æŸ¥çœ‹è´¦æˆ·æŒä»“é£é™© GET Position_risk
         # result = accountAPI.get_position_risk('SWAP')
-        # ²é¿´ÕË»§Óà¶î  Get Balance
+        # æŸ¥çœ‹è´¦æˆ·ä½™é¢  Get Balance
         result = accountAPI.get_account('USDT')['data'][0]["details"][0]
         swap = accountAPI.get_position_risk('SWAP')
 
@@ -292,41 +292,41 @@ class MVC:
         posData_length = str(len(posData)) if isinstance(posData, list) else str(posData)
         today = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
-        # ¼ì²éÃ¿¸öÖµ£¬Èç¹ûÎª¿Õ»òÕßÎª0£¬¾Í´òÓ¡0£¬·ñÔò´òÓ¡Êµ¼ÊµÄÖµ
+        # æ£€æŸ¥æ¯ä¸ªå€¼ï¼Œå¦‚æœä¸ºç©ºæˆ–è€…ä¸º0ï¼Œå°±æ‰“å°0ï¼Œå¦åˆ™æ‰“å°å®é™…çš„å€¼
         disEq = 0 if not result["disEq"] else float(result["disEq"])
         upl = 0 if not result["upl"] else float(result["upl"])
         cashBal = 0 if not result["cashBal"] else float(result["cashBal"])
         mgnRatio = 0 if not result["mgnRatio"] else float(result["mgnRatio"])
         frozenBal = 0 if not result["frozenBal"] else float(result["frozenBal"])
 
-        # ÃÀ½ğ²ãÃæ±ÒÖÖÕÛËãÈ¨Òæ
+        # ç¾é‡‘å±‚é¢å¸ç§æŠ˜ç®—æƒç›Š
         with open("../datas/uplRatio/log/disEq_history.txt", 'a', encoding='utf-8') as file:
-            # ½«ÈÕÖ¾ĞÅÏ¢Ğ´ÈëÎÄ¼ş
+            # å°†æ—¥å¿—ä¿¡æ¯å†™å…¥æ–‡ä»¶
             file.write("\n" + today + "," + "{:.2f}".format(disEq))
 
-        # Êµ¼ÊÎ´½áËãÓ¯¿÷×Ü¶î
+        # å®é™…æœªç»“ç®—ç›ˆäºæ€»é¢
         with open("../datas/uplRatio/log/upl_history.txt", 'a', encoding='utf-8') as file:
-            # ½«ÈÕÖ¾ĞÅÏ¢Ğ´ÈëÎÄ¼ş
+            # å°†æ—¥å¿—ä¿¡æ¯å†™å…¥æ–‡ä»¶
             file.write("\n" + today + "," + "{:.2f}".format(upl))
 
-        # USDT±ÒÖÖÓà¶î
+        # USDTå¸ç§ä½™é¢
         with open("../datas/uplRatio/log/cashBal_history.txt", 'a', encoding='utf-8') as file:
-            # ½«ÈÕÖ¾ĞÅÏ¢Ğ´ÈëÎÄ¼ş
+            # å°†æ—¥å¿—ä¿¡æ¯å†™å…¥æ–‡ä»¶
             file.write("\n" + today + "," + "{:.2f}".format(float(cashBal)))
 
-        # ºÏÔ¼¶©µ¥ÊıÁ¿
+        # åˆçº¦è®¢å•æ•°é‡
         with open("../datas/uplRatio/log/posdatacount_history.txt", 'a', encoding='utf-8') as file:
-            # ½«ÈÕÖ¾ĞÅÏ¢Ğ´ÈëÎÄ¼ş
+            # å°†æ—¥å¿—ä¿¡æ¯å†™å…¥æ–‡ä»¶
             file.write("\n" + today + "," + str(posData_length))
 
-        # USDT±£Ö¤½ğ½ğ¶î
+        # USDTä¿è¯é‡‘é‡‘é¢
         with open("../datas/uplRatio/log/frozenBal_history.txt", 'a', encoding='utf-8') as file:
-            # ½«ÈÕÖ¾ĞÅÏ¢Ğ´ÈëÎÄ¼ş
+            # å°†æ—¥å¿—ä¿¡æ¯å†™å…¥æ–‡ä»¶
             file.write("\n" + today + "," + "{:.2f}".format(frozenBal))
 
-        # USDT±£Ö¤½ğÂÊ
+        # USDTä¿è¯é‡‘ç‡
         with open("../datas/uplRatio/log/mgnRatio_history.txt", 'a', encoding='utf-8') as file:
-            # ½«ÈÕÖ¾ĞÅÏ¢Ğ´ÈëÎÄ¼ş
+            # å°†æ—¥å¿—ä¿¡æ¯å†™å…¥æ–‡ä»¶
             file.write("\n" + today + "," + "{:.2f}".format(mgnRatio * 100) + "%")
 
     def ordersell(api_key, secret_key, passphrase, flag, symbol, minute):
@@ -347,40 +347,40 @@ class MVC:
 
         swap = accountAPI.get_position_risk('SWAP')
 
-        # ÉèÖÃ¸Ü¸Ë±¶Êı  Set Leverage
+        # è®¾ç½®æ æ†å€æ•°  Set Leverage
         accountAPI.set_leverage(instId=symbol, lever='50', mgnMode='cross')
 
-        # µÚÒ»´ÎÂòÈë
+        # ç¬¬ä¸€æ¬¡ä¹°å…¥
         tradeAPI = Trade.TradeAPI(api_key, secret_key, passphrase, False, flag)
         tradeAPI.place_order(instId=symbol, tdMode='cross', side='sell', posSide='short',
                              ordType='market', sz=sr1)
 
-        # ÉèÖÃ¸Ü¸Ë±¶Êı  Set Leverage
+        # è®¾ç½®æ æ†å€æ•°  Set Leverage
         accountAPI.set_leverage(instId=symbol, lever='50', mgnMode='cross')
 
         # account api
         accountAPI = Account.AccountAPI(api_key, secret_key, passphrase, False, flag)
-        # ²é¿´³Ö²ÖĞÅÏ¢  Get Positions
+        # æŸ¥çœ‹æŒä»“ä¿¡æ¯  Get Positions
         result = accountAPI.get_positions('SWAP', symbol)
 
         time.sleep(5)
 
         # =====================================================================
         # print(dollar)
-        # ³Ö²ÖÁ¿
+        # æŒä»“é‡
         if len(result['data']) > 0 and len(result['data'][0]) > 0 and len(
                 result['data'][0]['notionalUsd']) > 0:
             notionalUsd = float(result['data'][0]['notionalUsd'])
-            # ±£Ö¤½ğ
+            # ä¿è¯é‡‘
             imr = float(result['data'][0]['imr'])
-            # Á¿
+            # é‡
             pos = float(result['data'][0]['pos'])
-            # µ¥¸öÁ¿ ±£Ö¤½ğÖµ
+            # å•ä¸ªé‡ ä¿è¯é‡‘å€¼
             onlyimr = imr / pos
-            # Ã¿Ò»ÃÀ½ğÖµ¶àÉÙÁ¿
+            # æ¯ä¸€ç¾é‡‘å€¼å¤šå°‘é‡
             onlyorder = int(float(dollar) / onlyimr)
 
-            # ²é¿´³Ö²ÖĞÅÏ¢  Get Positions
+            # æŸ¥çœ‹æŒä»“ä¿¡æ¯  Get Positions
             result = accountAPI.get_positions('SWAP', symbol)
 
             if "low" == minute:
@@ -388,52 +388,52 @@ class MVC:
             if "imr" == minute:
                 onlyorder = int(onlyorder * 1.5)
 
-            # µÚ2´ÎÂòÈë
+            # ç¬¬2æ¬¡ä¹°å…¥
             tradeAPI = Trade.TradeAPI(api_key, secret_key, passphrase, False, flag)
             tradeAPI.place_order(instId=symbol, tdMode='cross', side='sell', posSide='short',
                                  ordType='market', sz=str(onlyorder))
 
-            # ÉèÖÃ¸Ü¸Ë±¶Êı  Set Leverage
+            # è®¾ç½®æ æ†å€æ•°  Set Leverage
             accountAPI.set_leverage(instId=symbol, lever='50', mgnMode='cross')
 
             time.sleep(1)
 
-            # ²é¿´³Ö²ÖĞÅÏ¢  Get Positions
+            # æŸ¥çœ‹æŒä»“ä¿¡æ¯  Get Positions
             result = accountAPI.get_positions('SWAP', symbol)
 
-            # ¿ª²Ö¾ù¼Û
+            # å¼€ä»“å‡ä»·
             avgPx = float(result['data'][0]['avgPx'])
 
-            # ²ßÂÔÎ¯ÍĞÏÂµ¥  Place Algo Order
+            # ç­–ç•¥å§”æ‰˜ä¸‹å•  Place Algo Order
             tradeAPI.place_algo_order(symbol, 'cross', 'buy', ordType='conditional',
                                       sz=sr1, posSide='long', tpTriggerPx=str(float(avgPx) * r),
                                       tpOrdPx=str(float(avgPx) * r))
 
-            # ²ßÂÔÎ¯ÍĞÏÂµ¥  Place Algo Order
+            # ç­–ç•¥å§”æ‰˜ä¸‹å•  Place Algo Order
             result = tradeAPI.place_algo_order(symbol, 'cross', 'buy', ordType='conditional',
                                                sz=str(onlyorder), posSide='long', tpTriggerPx=str(float(avgPx) * r),
                                                tpOrdPx=str(float(avgPx) * r))
             time.sleep(1)
-            # ²é¿´³Ö²ÖĞÅÏ¢  Get Positions
+            # æŸ¥çœ‹æŒä»“ä¿¡æ¯  Get Positions
             result = accountAPI.get_positions('SWAP', symbol)
 
-            # ¿ª²Ö¾ù¼Û
+            # å¼€ä»“å‡ä»·
             avgPx = float(result['data'][0]['avgPx'])
 
-            # ²ßÂÔÎ¯ÍĞÏÂµ¥  Place Algo Order
+            # ç­–ç•¥å§”æ‰˜ä¸‹å•  Place Algo Order
             result = tradeAPI.place_algo_order(symbol, 'cross', 'buy', ordType='conditional',
                                                sz=str(onlyorder), posSide='long', tpTriggerPx=str(float(avgPx) * r),
                                                tpOrdPx=str(float(avgPx) * r))
 
             time.sleep(1)
 
-            # ²é¿´³Ö²ÖĞÅÏ¢  Get Positions
+            # æŸ¥çœ‹æŒä»“ä¿¡æ¯  Get Positions
             result = accountAPI.get_positions('SWAP', symbol)
 
-            # ¿ª²Ö¾ù¼Û
+            # å¼€ä»“å‡ä»·
             avgPx = float(result['data'][0]['avgPx'])
 
-            # ²ßÂÔÎ¯ÍĞÏÂµ¥  Place Algo Order
+            # ç­–ç•¥å§”æ‰˜ä¸‹å•  Place Algo Order
             result = tradeAPI.place_algo_order(symbol, 'cross', 'buy', ordType='conditional',
                                                sz=str(onlyorder), posSide='long', tpTriggerPx=str(float(avgPx) * r),
                                                tpOrdPx=str(float(avgPx) * r))
@@ -456,40 +456,40 @@ class MVC:
 
         swap = accountAPI.get_position_risk('SWAP')
 
-        # ÉèÖÃ¸Ü¸Ë±¶Êı  Set Leverage
+        # è®¾ç½®æ æ†å€æ•°  Set Leverage
         accountAPI.set_leverage(instId=symbol, lever='50', mgnMode='cross')
 
-        # µÚÒ»´ÎÂòÈë
+        # ç¬¬ä¸€æ¬¡ä¹°å…¥
         tradeAPI = Trade.TradeAPI(api_key, secret_key, passphrase, False, flag)
         tradeAPI.place_order(instId=symbol, tdMode='cross', side='buy', posSide='long',
                              ordType='market', sz=sr1)
 
-        # ÉèÖÃ¸Ü¸Ë±¶Êı  Set Leverage
+        # è®¾ç½®æ æ†å€æ•°  Set Leverage
         accountAPI.set_leverage(instId=symbol, lever='50', mgnMode='cross')
 
         # account api
         accountAPI = Account.AccountAPI(api_key, secret_key, passphrase, False, flag)
-        # ²é¿´³Ö²ÖĞÅÏ¢  Get Positions
+        # æŸ¥çœ‹æŒä»“ä¿¡æ¯  Get Positions
         result = accountAPI.get_positions('SWAP', symbol)
 
         time.sleep(5)
 
         # =====================================================================
         # print(dollar)
-        # ³Ö²ÖÁ¿
+        # æŒä»“é‡
         if len(result['data']) > 0 and len(result['data'][0]) > 0 and len(
                 result['data'][0]['notionalUsd']) > 0:
             notionalUsd = float(result['data'][0]['notionalUsd'])
-            # ±£Ö¤½ğ
+            # ä¿è¯é‡‘
             imr = float(result['data'][0]['imr'])
-            # Á¿
+            # é‡
             pos = float(result['data'][0]['pos'])
-            # µ¥¸öÁ¿ ±£Ö¤½ğÖµ
+            # å•ä¸ªé‡ ä¿è¯é‡‘å€¼
             onlyimr = imr / pos
-            # Ã¿Ò»ÃÀ½ğÖµ¶àÉÙÁ¿
+            # æ¯ä¸€ç¾é‡‘å€¼å¤šå°‘é‡
             onlyorder = int(float(dollar) / onlyimr)
 
-            # ²é¿´³Ö²ÖĞÅÏ¢  Get Positions
+            # æŸ¥çœ‹æŒä»“ä¿¡æ¯  Get Positions
             result = accountAPI.get_positions('SWAP', symbol)
 
             if "low" == minute:
@@ -497,58 +497,58 @@ class MVC:
             if "imr" == minute:
                 onlyorder = int(onlyorder * 1.5)
 
-            # µÚ2´ÎÂòÈë
+            # ç¬¬2æ¬¡ä¹°å…¥
             tradeAPI = Trade.TradeAPI(api_key, secret_key, passphrase, False, flag)
             tradeAPI.place_order(instId=symbol, tdMode='cross', side='buy', posSide='long',
                                  ordType='market', sz=str(onlyorder))
 
-            # ÉèÖÃ¸Ü¸Ë±¶Êı  Set Leverage
+            # è®¾ç½®æ æ†å€æ•°  Set Leverage
             accountAPI.set_leverage(instId=symbol, lever='50', mgnMode='cross')
 
             time.sleep(1)
 
-            # ²é¿´³Ö²ÖĞÅÏ¢  Get Positions
+            # æŸ¥çœ‹æŒä»“ä¿¡æ¯  Get Positions
             result = accountAPI.get_positions('SWAP', symbol)
 
-            # ¿ª²Ö¾ù¼Û
+            # å¼€ä»“å‡ä»·
             avgPx = float(result['data'][0]['avgPx'])
 
-            # ²ßÂÔÎ¯ÍĞÏÂµ¥  Place Algo Order
+            # ç­–ç•¥å§”æ‰˜ä¸‹å•  Place Algo Order
             tradeAPI.place_algo_order(symbol, 'cross', 'sell', ordType='conditional',
                                       sz=sr1, posSide='long', tpTriggerPx=str(float(avgPx) * r),
                                       tpOrdPx=str(float(avgPx) * r))
 
-            # ²ßÂÔÎ¯ÍĞÏÂµ¥  Place Algo Order
+            # ç­–ç•¥å§”æ‰˜ä¸‹å•  Place Algo Order
             result = tradeAPI.place_algo_order(symbol, 'cross', 'sell', ordType='conditional',
                                                sz=str(onlyorder), posSide='long', tpTriggerPx=str(float(avgPx) * r),
                                                tpOrdPx=str(float(avgPx) * r))
             time.sleep(1)
-            # ²é¿´³Ö²ÖĞÅÏ¢  Get Positions
+            # æŸ¥çœ‹æŒä»“ä¿¡æ¯  Get Positions
             result = accountAPI.get_positions('SWAP', symbol)
 
-            # ¿ª²Ö¾ù¼Û
+            # å¼€ä»“å‡ä»·
             avgPx = float(result['data'][0]['avgPx'])
 
-            # ²ßÂÔÎ¯ÍĞÏÂµ¥  Place Algo Order
+            # ç­–ç•¥å§”æ‰˜ä¸‹å•  Place Algo Order
             result = tradeAPI.place_algo_order(symbol, 'cross', 'sell', ordType='conditional',
                                                sz=str(onlyorder), posSide='long', tpTriggerPx=str(float(avgPx) * r),
                                                tpOrdPx=str(float(avgPx) * r))
 
             time.sleep(1)
 
-            # ²é¿´³Ö²ÖĞÅÏ¢  Get Positions
+            # æŸ¥çœ‹æŒä»“ä¿¡æ¯  Get Positions
             result = accountAPI.get_positions('SWAP', symbol)
 
-            # ¿ª²Ö¾ù¼Û
+            # å¼€ä»“å‡ä»·
             avgPx = float(result['data'][0]['avgPx'])
 
-            # ²ßÂÔÎ¯ÍĞÏÂµ¥  Place Algo Order
+            # ç­–ç•¥å§”æ‰˜ä¸‹å•  Place Algo Order
             result = tradeAPI.place_algo_order(symbol, 'cross', 'sell', ordType='conditional',
                                                sz=str(onlyorder), posSide='long', tpTriggerPx=str(float(avgPx) * r),
                                                tpOrdPx=str(float(avgPx) * r))
 
 
-# ·¢¶¤¶¤µÄÀàÏÈÉùÃ÷
+# å‘é’‰é’‰çš„ç±»å…ˆå£°æ˜
 class SendDingding:
     def sender(txt):
         headers = {
@@ -563,7 +563,8 @@ class SendDingding:
         sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))
         today = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
-        sendtexts = "±¾µØÊ±¼ä£º " + today + "--->>>" + txt + "£¬\n" + "£¬\nÎÒÃÇÊÇÊØ»¤Õß£¬Ò²ÊÇÒ»ÈºÊ±¿Ì¶Ô¿¹Î£ÏÕºÍ·è¿ñµÄ¿ÉÁ¯³æ£¡£¡£¡"
+        # é—®é¢˜åœ¨äº txt å¯èƒ½ä¸æ˜¯å­—ç¬¦ä¸²ç±»å‹ï¼Œç¡®ä¿ txt æ˜¯å­—ç¬¦ä¸²ç±»å‹ä»¥é¿å…ç±»å‹ä¸å…¼å®¹é”™è¯¯
+        sendtexts = "æœ¬åœ°æ—¶é—´ï¼š " + today + "--->>>" + str(txt) + "ï¼Œ\n" + "ï¼Œ\næˆ‘ä»¬æ˜¯å®ˆæŠ¤è€…ï¼Œä¹Ÿæ˜¯ä¸€ç¾¤æ—¶åˆ»å¯¹æŠ—å±é™©å’Œç–¯ç‹‚çš„å¯æ€œè™«ï¼ï¼ï¼"
 
         params = {
             'sign': sign,

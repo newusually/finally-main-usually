@@ -1,10 +1,10 @@
-# -*- coding: gbk -*-
+# -*- coding: utf-8 -*-
 
 import json
 
 
 class User:
-    # »ñÈ¡ÓÃ»§APIĞÅÏ¢ f'.'
+    # ï¿½ï¿½È¡ï¿½Ã»ï¿½APIï¿½ï¿½Ï¢ f'.'
     def get_userinfo():
         with open(f'../datas/api.json', 'r', encoding='utf-8') as f:
             obj = json.loads(f.read())
@@ -13,13 +13,13 @@ class User:
         secret_key = obj['secret_key']
         passphrase = obj['passphrase']
 
-        # flagÊÇÊµÅÌÓëÄ£ÄâÅÌµÄÇĞ»»²ÎÊı flag is the key parameter which can help you to change between demo and real trading.
-        # flag = '1'  # Ä£ÄâÅÌ demo trading
-        flag = '0'  # ÊµÅÌ real trading
+        # flagï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½Ìµï¿½ï¿½Ğ»ï¿½ï¿½ï¿½ï¿½ï¿½ flag is the key parameter which can help you to change between demo and real trading.
+        # flag = '1'  # Ä£ï¿½ï¿½ï¿½ï¿½ demo trading
+        flag = '0'  # Êµï¿½ï¿½ real trading
 
         return api_key, secret_key, passphrase, flag
 
-    # »ñÈ¡ÓÃ»§×ÓÕË»§APIĞÅÏ¢ f'./subAccount_api_key/'
+    # ï¿½ï¿½È¡ï¿½Ã»ï¿½ï¿½ï¿½ï¿½Ë»ï¿½APIï¿½ï¿½Ï¢ f'./subAccount_api_key/'
     def get_subAccount_userinfo():
         subAccount_api_key = []
         subAccount_secret_key = []
@@ -37,13 +37,13 @@ class User:
             subAccount_secret_key.append(secret_key)
             subAccount_passphrase.append(passphrase)
 
-            # flagÊÇÊµÅÌÓëÄ£ÄâÅÌµÄÇĞ»»²ÎÊı flag is the key parameter which can help you to change between demo and real trading.
-            # flag = '1'  # Ä£ÄâÅÌ demo trading
-            flag = '0'  # ÊµÅÌ real trading
+            # flagï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½Ìµï¿½ï¿½Ğ»ï¿½ï¿½ï¿½ï¿½ï¿½ flag is the key parameter which can help you to change between demo and real trading.
+            # flag = '1'  # Ä£ï¿½ï¿½ï¿½ï¿½ demo trading
+            flag = '0'  # Êµï¿½ï¿½ real trading
 
         return subAccount_api_key, subAccount_secret_key, subAccount_passphrase, flag
 
-    # »ñÈ¡ÓÃ»§ÂòÈëÊÖÊı f'./
+    # ï¿½ï¿½È¡ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ f'./
     def get_user_sr():
         with open(f'../datas/sr.json', 'r', encoding='utf-8') as f:
             obj = json.loads(f.read())
