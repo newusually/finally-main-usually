@@ -67,7 +67,10 @@ func Run(minute string) {
 
 	symbollist := mvc.Getsymbollist()
 	for _, symbol := range symbollist {
-		isbuy := mvc.GetTakerVolume(strings.TrimSuffix(symbol, "-USDT-SWAP"), minute)
+
+		x, c, c2, c1, _, _, _, _, _ := mvc.GetKline(strings.TrimSuffix(symbol, "-USDT-SWAP"), "15m")
+
+		isbuy := c2 < 0.95 && c2 > 0.9 && c1 > 0.9 && c1 < 0.98 && c[x-1] > 0.0001
 		if isbuy {
 
 			fmt.Println(time.Now().Format("2006-1-2 15:04:02") + "-------------------------------买入--------------------------------->>>")
