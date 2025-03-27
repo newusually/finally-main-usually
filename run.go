@@ -3,6 +3,7 @@ package main
 import (
 	"finally-main/mvc"
 	"finally-main/runtime"
+
 	"github.com/robfig/cron/v3"
 )
 
@@ -30,14 +31,14 @@ func main() {
 	//crontab.AddFunc(spec3, runtime.Run3)
 
 	//定时任务5m
-	//spec5 := "59 0,5,10,15,20,25,30,35,40,45,50,55 * * * ?" //cron表达式，每4小时一次
+	spec5 := "59 0,5,10,15,20,25,30,35,40,45,50,55 * * * ?" //cron表达式，每4小时一次
 	// 添加定时任务,
-	//crontab.AddFunc(spec5, runtime.Run5)
+	crontab.AddFunc(spec5, runtime.Run5)
 
 	//定时任务15m
-	//spec15 := "20 1,16,31,46 * * * ?" //cron表达式，每15min一次
+	spec15 := "20 1,16,31,46 * * * ?" //cron表达式，每15min一次
 	// 添加定时任务,
-	//crontab.AddFunc(spec15, runtime.Run15)
+	crontab.AddFunc(spec15, runtime.Run15)
 
 	//定时任务15m
 	specupl15Ratio := "20 1,16,31,46 * * * ?" //cron表达式，每15min一次
@@ -50,9 +51,9 @@ func main() {
 	crontab.AddFunc(specSellAll, mvc.SellAll)
 
 	//定时任务1H
-	spec1H := "55 50 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 * * ?" //cron表达式，每1小时一次
+	//spec1H := "55 50 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 * * ?" //cron表达式，每1小时一次
 	// 添加定时任务,
-	crontab.AddFunc(spec1H, runtime.Run1H)
+	//crontab.AddFunc(spec1H, runtime.Run1H)
 
 	//定时任务2H
 	//spec2H := "55 50 1,3,5,7,9,11,13,15,17,19,21,23 * * ?" //cron表达式，每2小时一次
