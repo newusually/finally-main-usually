@@ -94,33 +94,21 @@ func generateBasic() (string, float64) {
 	return basicArithmetic()
 }
 
+// 记录已经生成的题目
+var generatedQuestions = make(map[string]bool)
+
 // 基础四则运算
 func basicArithmetic() (string, float64) {
 	ops := []string{"+", "-", "×", "÷"}
-	op := ops[rand.Intn(len(ops))]
-	// 操作数限制为个位数
-	a := rand.Intn(9) + 1
-	b := rand.Intn(9) + 1
-
+	var question string
 	var result float64
-	switch op {
-	case "+":
-		result = float64(a + b)
-	case "-":
-		result = float64(a - b)
-	case "×":
-		result = float64(a * b)
-	case "÷":
-		for b == 0 {
-			b = rand.Intn(9) + 1
-		}
-		result = float64(a) / float64(b)
-	}
 
-	// 确保答案为十位数以内
-	for result >= 100 {
-		a = rand.Intn(9) + 1
-		b = rand.Intn(9) + 1
+	for {
+		op := ops[rand.Intn(len(ops))]
+		// 操作数限制为个位数
+		a := rand.Intn(9) + 1
+		b := rand.Intn(9) + 1
+
 		switch op {
 		case "+":
 			result = float64(a + b)
@@ -129,14 +117,28 @@ func basicArithmetic() (string, float64) {
 		case "×":
 			result = float64(a * b)
 		case "÷":
-			for b == 0 {
+			// 确保除法没有小数点
+			for b == 0 || a%b != 0 {
+				a = rand.Intn(9) + 1
 				b = rand.Intn(9) + 1
 			}
-			result = float64(a) / float64(b)
+			result = float64(a / b)
+		}
+
+		// 确保答案为十位数以内
+		if result >= 100 {
+			continue
+		}
+
+		question = fmt.Sprintf("%d %s %d =", a, op, b)
+		// 检查题目是否重复
+		if !generatedQuestions[question] {
+			generatedQuestions[question] = true
+			break
 		}
 	}
 
-	return fmt.Sprintf("%d %s %d =", a, op, b), result
+	return question, result
 }
 
 // 新增混合运算（网页5算法扩展）
@@ -151,62 +153,78 @@ func mixedOperation() (string, float64) {
 		{"+", "×"}, {"-", "÷"}, {"×", "+"}, {"÷", "-"},
 	}
 
-	// 随机选择运算模式
-	pattern := patterns[rand.Intn(len(patterns))]
-	ops := opCombos[rand.Intn(len(opCombos))]
-
-	// 生成运算数，限制为个位数
-	a := rand.Intn(9) + 1
-	b := rand.Intn(9) + 1
-	c := rand.Intn(9) + 1
-
-	// 构造表达式
-	expr := fmt.Sprintf(pattern, a, ops[0], b, ops[1], c)
-
-	// 计算结果
+	var question string
 	var result float64
-	switch ops[0] + ops[1] {
-	case "+×":
-		result = float64(a + b*c)
-	case "-÷":
-		for c == 0 {
-			c = rand.Intn(9) + 1
-		}
-		result = float64((a - b) / c)
-	case "×+":
-		result = float64(a*b + c)
-	case "÷-":
-		for b == 0 {
-			b = rand.Intn(9) + 1
-		}
-		result = float64(a/b - c)
-	}
 
-	// 确保答案为十位数以内
-	for result >= 100 {
-		a = rand.Intn(9) + 1
-		b = rand.Intn(9) + 1
-		c = rand.Intn(9) + 1
+	for {
+		// 随机选择运算模式
+		pattern := patterns[rand.Intn(len(patterns))]
+		ops := opCombos[rand.Intn(len(opCombos))]
+
+		// 生成运算数，限制为个位数
+		a := rand.Intn(9) + 1
+		b := rand.Intn(9) + 1
+		c := rand.Intn(9) + 1
+
+		// 处理除法没有小数点
+		if ops[0] == "÷" {
+			for b == 0 || a%b != 0 {
+				a = rand.Intn(9) + 1
+				b = rand.Intn(9) + 1
+			}
+		}
+		if ops[1] == "÷" {
+			switch pattern {
+			case "(%d %s %d) %s %d":
+				for c == 0 || (a+b)%c != 0 {
+					a = rand.Intn(9) + 1
+					b = rand.Intn(9) + 1
+					c = rand.Intn(9) + 1
+				}
+			case "%d %s (%d %s %d)":
+				for c == 0 || b%c != 0 {
+					a = rand.Intn(9) + 1
+					b = rand.Intn(9) + 1
+					c = rand.Intn(9) + 1
+				}
+			case "%d %s %d %s %d":
+				for c == 0 || b%c != 0 {
+					a = rand.Intn(9) + 1
+					b = rand.Intn(9) + 1
+					c = rand.Intn(9) + 1
+				}
+			}
+		}
+
+		// 构造表达式
+		expr := fmt.Sprintf(pattern, a, ops[0], b, ops[1], c)
+		question = expr + " ="
+
+		// 计算结果
 		switch ops[0] + ops[1] {
 		case "+×":
 			result = float64(a + b*c)
 		case "-÷":
-			for c == 0 {
-				c = rand.Intn(9) + 1
-			}
 			result = float64((a - b) / c)
 		case "×+":
 			result = float64(a*b + c)
 		case "÷-":
-			for b == 0 {
-				b = rand.Intn(9) + 1
-			}
 			result = float64(a/b - c)
 		}
-		expr = fmt.Sprintf(pattern, a, ops[0], b, ops[1], c)
+
+		// 确保答案为十位数以内
+		if result >= 100 {
+			continue
+		}
+
+		// 检查题目是否重复
+		if !generatedQuestions[question] {
+			generatedQuestions[question] = true
+			break
+		}
 	}
 
-	return expr + " =", result
+	return question, result
 }
 
 // 2. 动物组合题（网页14动物问题扩展）
